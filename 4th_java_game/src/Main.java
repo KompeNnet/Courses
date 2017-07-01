@@ -24,7 +24,7 @@ public class Main
         while (!str.equalsIgnoreCase("quit"))
         {
             int computer = ComputersChoise();
-            GetProof();
+            SetProof();
             if (str.equalsIgnoreCase("help"))
                 PrintHelp();
             else
@@ -33,11 +33,17 @@ public class Main
                 while (!isIndexExists(player))
                 {
                     System.out.print("Doesn't exist. Please, try again:\n");
-                    PrintHelp();
                     str = System.console().readLine();
-                    if (str.equalsIgnoreCase("quit")) return;
-                    else if (str.equalsIgnoreCase( "help")) PrintHelp();
-                    else player = GetPlayersInput(str);
+                    while (str.equalsIgnoreCase("quit") || str.equalsIgnoreCase( "help"))
+                    {
+                        if (str.equalsIgnoreCase("quit")) return;
+                        if (str.equalsIgnoreCase( "help"))
+                        {
+                            PrintHelp();
+                            str = System.console().readLine();
+                        }
+                    }
+                    player = GetPlayersInput(str);
                 }
                 int winner = isPlayerWin(computer, player);
                 PrintWinner(winner, computer, player);
@@ -50,27 +56,27 @@ public class Main
     {
         if (winner == 1)
         {
-            PrintProof();
+            GetProof();
             System.console().printf("You're win!\nComputer: %s\nYou: %s\n\n", items.get(computer), items.get(player));
         }
         else if (winner == 0)
         {
-            PrintProof();
+            GetProof();
             System.console().printf("Oups, same chiose!\nComputer: %s\nYou: %s\n\n", items.get(computer), items.get(player));
         }
         else
         {
-            PrintProof();
+            GetProof();
             System.console().printf("Computer wins!\nComputer: %s\nYou: %s\n\n", items.get(computer), items.get(player));
         }
     }
 
-    private static void GetProof()
+    private static void SetProof()
     {
         // proof here
     }
 
-    private static void PrintProof()
+    private static void GetProof()
     {
         // proof print here
     }
@@ -81,7 +87,14 @@ public class Main
         catch (Exception e)
         {
             System.out.print("Please, try again:\n");
-            PrintHelp();
+            str = System.console().readLine();
+            if (str.equalsIgnoreCase("help"))
+                while (str.equalsIgnoreCase("help"))
+                {
+                    PrintHelp();
+                    str = System.console().readLine();
+                }
+            else return GetPlayersInput(str);
             return GetPlayersInput(System.console().readLine());
         }
     }
