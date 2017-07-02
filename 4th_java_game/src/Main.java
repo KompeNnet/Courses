@@ -1,6 +1,13 @@
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigInteger;
 
 /**
  * Created by Krompy on 7/1/2017.
@@ -10,46 +17,54 @@ public class Main
 {
     private static List<String> items = new ArrayList<>();
     private static int count;
+    private static String key;
+    private static int keyLength = 0;
 
     public static void main(String[] args)
     {
         GetRules(args);
+        GetKeyLength();
         PrintHelp();
         LetsPlay();
     }
 
     private static void LetsPlay()
     {
-        String str = System.console().readLine();
+        String str = "";
+        int computer = 0;
         while (!str.equalsIgnoreCase("quit"))
         {
-            int computer = ComputersChoise();
-            SetProof();
-            if (str.equalsIgnoreCase("help"))
-                PrintHelp();
-            else
+            if (!str.isEmpty())
             {
-                int player = GetPlayersInput(str) - 1;
-                while (!isIndexExists(player))
-                {
-                    System.out.print("Doesn't exist. Please, try again:\n");
-                    str = System.console().readLine();
-                    while (str.equalsIgnoreCase("quit") || str.equalsIgnoreCase( "help"))
-                    {
-                        if (str.equalsIgnoreCase("quit")) return;
-                        if (str.equalsIgnoreCase( "help"))
-                        {
-                            PrintHelp();
-                            str = System.console().readLine();
+                if (str.equalsIgnoreCase("help"))
+                    PrintHelp();
+                else {
+                    int player = GetPlayersInput(str) - 1;
+                    while (!isIndexExists(player)) {
+                        System.out.print("Doesn't exist. Please, try again:\n");
+                        str = System.console().readLine();
+                        while (str.equalsIgnoreCase("quit") || str.equalsIgnoreCase("help")) {
+                            if (str.equalsIgnoreCase("quit")) return;
+                            if (str.equalsIgnoreCase("help")) {
+                                PrintHelp();
+                                str = System.console().readLine();
+                            }
                         }
+                        player = GetPlayersInput(str);
                     }
-                    player = GetPlayersInput(str);
+                    int winner = isPlayerWins(computer, player);
+                    PrintWinner(winner, computer, player);
                 }
-                int winner = isPlayerWin(computer, player);
-                PrintWinner(winner, computer, player);
             }
+            computer = ComputersChoise();
+            SetProof(items.get(computer));
             str = System.console().readLine();
         }
+    }
+
+    private static void GetKeyLength()
+    {
+        for (String item: items) if (keyLength < item.length()) keyLength = item.length();
     }
 
     private static void PrintWinner(int winner, int computer, int player)
@@ -71,14 +86,30 @@ public class Main
         }
     }
 
-    private static void SetProof()
+    private static void SetProof(String item)
     {
-        // proof here
+        SecureRandom random = new SecureRandom();
+        key = new BigInteger(keyLength * 8, random).toString(32);
+        String proof = "";
+        try { proof = GenerateHash(key, item); } catch (NoSuchAlgorithmException e) { }
+        System.console().printf("Computers encoded choise: %s\n", proof);
+    }
+
+    public static String GenerateHash(String key, String item) throws NoSuchAlgorithmException
+    {
+        Charset utfCs = Charset.forName("US-ASCII");
+        Mac sha256 = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secretKey = new SecretKeySpec(utfCs.encode(key).array(), "HmacSHA256");
+        try { sha256.init(secretKey); }
+        catch (InvalidKeyException e) { e.printStackTrace(); }
+        byte[] mac_data = sha256.doFinal(utfCs.encode(item).array());
+        String result = DatatypeConverter.printHexBinary(mac_data);
+        return result;
     }
 
     private static void GetProof()
     {
-        // proof print here
+        System.console().printf("Key: %s\n", key);
     }
 
     private static int GetPlayersInput(String str)
@@ -99,7 +130,7 @@ public class Main
         }
     }
 
-    private static int isPlayerWin(int computer, int player)
+    private static int isPlayerWins(int computer, int player)
     {
         if (player < computer)
             return ((computer + (player % 2)) % 2 == 1) ? 1 : -1;
@@ -108,10 +139,7 @@ public class Main
         return 0;
     }
 
-    private static boolean isIndexExists(int i)
-    {
-        return (i < items.size() && i >= 0);
-    }
+    private static boolean isIndexExists(int i) { return (i < items.size() && i >= 0); }
 
     private static int ComputersChoise()
     {
