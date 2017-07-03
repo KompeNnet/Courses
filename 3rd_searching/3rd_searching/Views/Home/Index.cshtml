@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Home page";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="container body-content">
+        <form method="post">
+            <input type="text" />
+            <input type="button" value="Find" />
+        </form>
+        <div>@Html.ActionLink("Some item", "action here")</div> <!--action here-->
+    </div>
+    <br />
+    <div class="container body-content">
+        <table>
+            <tr>
+                <td><h3>Name</h3></td>
+                <td><h3>Picture</h3></td>
+                <td><h3>Price</h3></td>
+                <td><h3>Exists</h3></td>
+            </tr>
+            @foreach (var item in ViewBag.Items)
+            {
+                <tr>
+                    <td><p><a href=b.ItemLink>@item.Name</a></p></td>
+                    <td><p>@item.PictureLink</p></td>
+                    <td><p>@item.Price</p></td>
+                    <td><p>@item.IsExists</p></td>
+                </tr>
+            }
+        </table>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>
