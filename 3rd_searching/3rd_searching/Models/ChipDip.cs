@@ -17,58 +17,69 @@ namespace _3rd_searching.Models
         private List<Item> GetResultList(string request)
         {
             List<Item> result = new List<Item>();
-            for (int i = 1; i <= GetPageCount(request); i++) GetItemsFromPage(ref result, request, i);
+            for (int i = 1; i <= GetPageCount(request); i++) GetItemsFromMainLists(ref result, request, i);
             return result;
         }
 
-        private void GetItemsFromPage(ref List<Item> result, string request, int i)
+        private void GetItemsFromMainLists(ref List<Item> result, string request, int i)
         {
             try
             {
                 List<string> links = GetLinksOnPage(request, i);
-                foreach (string url in links)
-                {
-                    HtmlDocument htmlDoc = (new HtmlWeb()).Load(@"https://www.ru-chipdip.by" + url);
-                    //TODO
-                    HtmlNodeCollection nodes = htmlDoc.DocumentNode.SelectNodes("//*[@class='item__content']");
-                    foreach (HtmlNode node in nodes) result.Add(GetItem(node));
-                }
+                GetItemsFromEachMainList(ref result, links);
             }
             catch { }
         }
 
+        private void GetItemsFromEachMainList(ref List<Item> result, List<string> links)
+        {
+            foreach (string url in links)
+            {
+                HtmlNodeCollection nodes = GetNodeCollection(@"https://www.ru-chipdip.by" + url, "//*[@class='item__content']");
+                foreach (HtmlNode node in nodes) result.Add(GetItem(node));
+            }
+        }
+
+        private HtmlNodeCollection GetNodeCollection(string htmlDocLink, string selectParams)
+        {
+            HtmlDocument htmlDoc = (new HtmlWeb()).Load(htmlDocLink);
+            return htmlDoc.DocumentNode.SelectNodes(selectParams);
+        }
+
         private List<string> GetLinksOnPage(string request, int i)
         {
-            HtmlDocument htmlDoc = (new HtmlWeb()).Load(request + $"&page={i}");
-            HtmlNodeCollection nodes = htmlDoc.DocumentNode.SelectNodes("//*[@class='link group-header']");
+            HtmlNodeCollection nodes = GetNodeCollection(request + $"&page={i}", "//*[@class='link group-header']");
             List<string> result = new List<string>();
-            foreach (HtmlNode node in nodes)
-            {
-                if (node.Attributes["href"].Value.Contains("catalog-show"))
-                    result.Add(node.Attributes["href"].Value);
-                else
-                {
-                    string url = node.Attributes["href"].Value;
-                    result.Add(url.Replace("catalog", "catalog-show"));
-                }
-
-            }
+            foreach (HtmlNode node in nodes) result.Add(CheckUrl(node));
             return result;
+        }
+
+        private string CheckUrl(HtmlNode node)
+        {
+            if (node.Attributes["href"].Value.Contains("catalog-show"))
+                return node.Attributes["href"].Value;
+            string url = node.Attributes["href"].Value;
+            return url.Replace("catalog", "catalog-show");
         }
 
         private Item GetItem(HtmlNode node)
         {
-            Item item = new Item();
-            item.ItemLink = @"https://www.ru-chipdip.by" + node.SelectNodes(".//*[@class='link link_no-underline']")[0].Attributes["href"].Value;
-            item.Name = node.SelectNodes(".//*[@class='link']")[0].InnerText;
-            item.ImageLink = node.SelectNodes(".//img")?[0].Attributes["src"].Value;
-            item.Price = node.SelectNodes(".//*[@class='price__value']")[0].InnerText.Split(' ')[0].Replace('.', ',') + " BYN";
-
-            if (node.SelectNodes(".//*[@class='item__avail_available']") != null) item.Existance = node.SelectNodes(".//*[@class='item__avail_available']")[0].InnerText;
-            else if (node.SelectNodes(".//*[@class='item__avail_order']") != null) item.Existance = node.SelectNodes(".//*[@class='item__avail_order']")[0].InnerText;
-            else item.Existance = node.SelectNodes(".//*[@class='item__avail_awaiting']")[0].InnerText;
-
+            Item item = new Item()
+            {
+                ItemLink = @"https://www.ru-chipdip.by" + node.SelectNodes(".//*[@class='link link_no-underline']")[0].Attributes["href"].Value,
+                Name = node.SelectNodes(".//*[@class='link']")[0].InnerText,
+                ImageLink = node.SelectNodes(".//img")?[0].Attributes["src"].Value,
+                Price = node.SelectNodes(".//*[@class='price__value']")[0].InnerText.Split(' ')[0].Replace('.', ',') + " BYN",
+                Existance = GetExistance(node)
+            };
             return item;
+        }
+
+        private string GetExistance(HtmlNode node)
+        {
+            if (node.SelectNodes(".//*[@class='item__avail_available']") != null) return node.SelectNodes(".//*[@class='item__avail_available']")[0].InnerText;
+            if (node.SelectNodes(".//*[@class='item__avail_order']") != null) return node.SelectNodes(".//*[@class='item__avail_order']")[0].InnerText;
+            return node.SelectNodes(".//*[@class='item__avail_awaiting']")[0].InnerText;
         }
 
         private int? GetPageCount(string request)
