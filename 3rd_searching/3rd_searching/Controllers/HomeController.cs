@@ -20,9 +20,8 @@ namespace _3rd_searching.Controllers
         [HttpPost]
         public ActionResult Index(string arg)
         {
-            List<Item> result = new ChipDip().Parse(arg);
-            //List<Item> result = new BelChip().Parse(arg);
-            //result.AddRange(new ChipDip().Parse(arg));
+            List<Item> result = new BelChip().Parse(arg);
+            result.AddRange(new ChipDip().Parse(arg));
             ViewBag.items = result;
             return View();
         }
