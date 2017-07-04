@@ -34,8 +34,8 @@ namespace _3rd_searching.Models
 
         private void SetExistense(ref Item item)
         {
-            if (item.Price == "цена по запросу") item.Existance = "по запросу";
-            else { item.Existance = "на складе"; item.Price += "BYN"; }
+            if (item.Price == "цена по запросу") item.Existance = "По запросу";
+            else { item.Existance = "Со склада"; item.Price += "BYN"; }
         }
 
         private HtmlNodeCollection GetNodeCollection(string query)
