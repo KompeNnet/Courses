@@ -1,43 +1,74 @@
 ﻿@{
-    ViewBag.Title = "Home page";
+    ViewBag.Title = "Search";
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <style>
+        table {
+            border: 1px solid;
+            border-color: grey;
+            margin: auto;
+            width: 100%;
+        }
+        tr, td {
+            border: 1px solid;
+            border-color: grey;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
     <div class="container body-content">
-        <form method="post">
-            <input type="text" />
-            <input type="button" value="Find" />
-        </form>
-        <div>@Html.ActionLink("Some item", "action here")</div> <!--action here-->
-    </div>
-    <br />
-    <div class="container body-content">
-        <table>
-            <tr>
-                <td><h3>Name</h3></td>
-                <td><h3>Picture</h3></td>
-                <td><h3>Price</h3></td>
-                <td><h3>Exists</h3></td>
-            </tr>
-            @foreach (var item in ViewBag.Items)
-            {
-                <tr>
-                    <td><p><a href=b.ItemLink>@item.Name</a></p></td>
-                    <td><p>@item.PictureLink</p></td>
-                    <td><p>@item.Price</p></td>
-                    <td><p>@item.IsExists</p></td>
-                </tr>
-            }
-        </table>
+
+        <h2>Search</h2>
+        <div class="form-group">
+            <form class="form-inline" method="post" target="_self">
+                <input class="form-control" type="text" placeholder="Search" name="arg" />
+                <input class="btn btn-info" type="submit" value="Search" />
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                @if (ViewBag.chips?.Count > 0)
+                {
+                    <thead>
+                        <tr>
+                            <!--<th width=50%><h5>Picture</h5></th>-->
+                            <th>Name</th>
+                            <th>Exists</th>
+                            <th>Price</th>
+                            <!--
+                            <td width=40%><h5>Name</h5></td>
+                            <td width=50%><h5>Picture</h5></td>
+                            <td width=10%><h5>Exists</h5></td>
+                                -->
+                        </tr>
+                    </thead>
+                }
+                <tbody>
+                    @foreach (_3rd_searching.Models.Item item in ViewBag.items ?? new List<int>())
+                    {
+                        <tr>
+                            <td>
+                                <img class="img-rounded" src="@item.PictureLink" />
+                                <a target="_blank" style="vertical-align:top" href="@item.ItemLink">@item.Name</a>
+                            </td>
+                            <td>@item.Existing</td>
+                            <td>@item.Price</td>
+                            <td><a target="_blank" href="@item.ItemLink" class="btn btn-info" role="button">Перейти</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

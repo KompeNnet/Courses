@@ -12,12 +12,17 @@ namespace _3rd_searching.Controllers
 {
     public class HomeController : Controller
     {
-        Result result = new Result();
-
         public ViewResult Index()
         {
-            IEnumerable<Item> items = result.ResultList;
-            ViewBag.Items = items;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Index(string arg)
+        {
+            List<Item> result = new ChipDip().Parse(arg);
+            result.AddRange(new BelChip().Parse(arg));
+            ViewBag.items = result;
             return View();
         }
     }
