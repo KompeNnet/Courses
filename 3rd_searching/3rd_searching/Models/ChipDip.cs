@@ -25,29 +25,32 @@ namespace _3rd_searching.Models
         {
             try
             {
-                HtmlNodeCollection nodes = GetNodeCollection(request, i);
-                foreach (HtmlNode node in nodes) result.Add(GetItem(node));
+                List<string> links = GetLinksOnPage(request, i);
+                foreach (string url in links)
+                {
+                    HtmlDocument htmlDoc = (new HtmlWeb()).Load(@"https://www.ru-chipdip.by" + url);
+                    HtmlNodeCollection nodes = htmlDoc.DocumentNode.SelectNodes("//*[@class='item__content']");
+                }
             }
             catch { }
+        }
+
+        private List<string> GetLinksOnPage(string request, int i)
+        {
+            HtmlDocument htmlDoc = (new HtmlWeb()).Load(request + $"&page={i}");
+            HtmlNodeCollection nodes = htmlDoc.DocumentNode.SelectNodes("//*[@class='link group-header']");
+            List<string> result = new List<string>();
+            foreach (HtmlNode node in nodes)
+                result.Add(node.Attributes["href"].Value);
+            return result;
         }
 
         private Item GetItem(HtmlNode node)
         {
             return new Item()
             {
-                ItemLink = @"https://www.ru-chipdip.by" + node.SelectNodes(".//*[@class='link']")[0].Attributes["href"].Value,
-                Name = node.SelectNodes(".//*[@class='link']")[0].InnerText,
-                ImageLink = node.SelectNodes(".//img")?[0].Attributes["src"].Value,
-                Price = node.SelectNodes(".//*[@class='price_mr']")[0].InnerText.Split(' ')[0].Replace('.', ',') + " BYN",
-                Existance = node.SelectNodes(".//*[@class='item__avail_available']")?[0].InnerText ?? node.SelectNodes(".//*[@class='item__avail_order']")?[0].InnerText
+                // TODO: Set item values.
             };
-        }
-
-        private HtmlNodeCollection GetNodeCollection(string request, int i)
-        {
-            HtmlDocument htmlDoc = (new HtmlWeb()).Load(request + $"&page={i}");
-            HtmlNodeCollection collection = htmlDoc.DocumentNode.SelectNodes("//*[@id='search_items']");
-            return collection[0].SelectNodes("//*[@class='with-hover']");
         }
 
         private int? GetPageCount(string request)

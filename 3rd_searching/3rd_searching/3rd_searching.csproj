@@ -149,8 +149,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BelChip.cs" />
-    <Compile Include="Models\ChipDip.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ChipDip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
