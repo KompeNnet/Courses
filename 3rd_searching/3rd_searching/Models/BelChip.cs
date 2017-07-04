@@ -19,15 +19,20 @@ namespace _3rd_searching.Models
 
         private Item GetItem(HtmlNode node)
         {
-            Item item = new Item()
+            Item item = GetItemValues(node);
+            SetExistense(ref item);
+            return item;
+        }
+
+        private Item GetItemValues(HtmlNode node)
+        {
+            return new Item()
             {
                 ItemLink = @"http://belchip.by/" + node.SelectNodes(".//h3/a")[0].Attributes["href"].Value,
                 Name = node.SelectNodes(".//h3/a")[0].InnerText,
                 ImageLink = @"http://belchip.by/" + node.SelectNodes(".//a/img")?[1].Attributes["src"].Value,
                 Price = node.SelectNodes(".//*[@class='denoPrice']")?[0].InnerText.Split(' ')[0] ?? "цена по запросу"
             };
-            SetExistense(ref item);
-            return item;
         }
 
         private void SetExistense(ref Item item)
