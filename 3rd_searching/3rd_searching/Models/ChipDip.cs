@@ -1,8 +1,5 @@
 ﻿using HtmlAgilityPack;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace _3rd_searching.Models
 {
@@ -17,27 +14,30 @@ namespace _3rd_searching.Models
         private List<Item> GetResultList(string request)
         {
             List<Item> result = new List<Item>();
-            for (int i = 1; i <= GetPageCount(request); i++) GetItemsFromMainLists(ref result, request, i);
+            for (int i = 1; i <= GetPageCount(request); i++) GetItemsFromSubLists(ref result, request, i);
             return result;
         }
 
-        private void GetItemsFromMainLists(ref List<Item> result, string request, int i)
+        private void GetItemsFromSubLists(ref List<Item> result, string request, int i)
         {
             try
             {
                 List<string> links = GetLinksOnPage(request, i);
-                GetItemsFromEachMainList(ref result, links);
+                GetItemsFromEachSubList(ref result, links);
             }
             catch { }
         }
 
-        private void GetItemsFromEachMainList(ref List<Item> result, List<string> links)
+        private void GetItemsFromEachSubList(ref List<Item> result, List<string> links)
         {
             foreach (string url in links)
-            {
-                HtmlNodeCollection nodes = GetNodeCollection(@"https://www.ru-chipdip.by" + url, "//*[@class='item__content']");
-                foreach (HtmlNode node in nodes) result.Add(GetItem(node));
-            }
+                for (int i = 1; i <= GetPageCount(url); i++) GetItemsFromSubListPages(ref result, url, i);
+        }
+
+        private void GetItemsFromSubListPages(ref List<Item> result, string url, int i)
+        {
+            HtmlNodeCollection nodes = GetNodeCollection(url + $"&page={i}", "//*[@class='item__content']");
+            foreach (HtmlNode node in nodes) result.Add(GetItem(node));
         }
 
         private HtmlNodeCollection GetNodeCollection(string htmlDocLink, string selectParams)
@@ -50,7 +50,7 @@ namespace _3rd_searching.Models
         {
             HtmlNodeCollection nodes = GetNodeCollection(request + $"&page={i}", "//*[@class='link group-header']");
             List<string> result = new List<string>();
-            foreach (HtmlNode node in nodes) result.Add(CheckUrl(node));
+            foreach (HtmlNode node in nodes) result.Add(@"https://www.ru-chipdip.by" + CheckUrl(node));
             return result;
         }
 
@@ -77,8 +77,10 @@ namespace _3rd_searching.Models
 
         private string GetExistance(HtmlNode node)
         {
-            if (node.SelectNodes(".//*[@class='item__avail_available']") != null) return node.SelectNodes(".//*[@class='item__avail_available']")[0].InnerText;
-            if (node.SelectNodes(".//*[@class='item__avail_order']") != null) return node.SelectNodes(".//*[@class='item__avail_order']")[0].InnerText;
+            if (node.SelectNodes(".//*[@class='item__avail_available']") != null)
+                return node.SelectNodes(".//*[@class='item__avail_available']")[0].InnerText;
+            if (node.SelectNodes(".//*[@class='item__avail_order']") != null)
+                return node.SelectNodes(".//*[@class='item__avail_order']")[0].InnerText;
             return node.SelectNodes(".//*[@class='item__avail_awaiting']")[0].InnerText;
         }
 
