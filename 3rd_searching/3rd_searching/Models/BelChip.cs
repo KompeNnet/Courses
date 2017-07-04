@@ -24,7 +24,7 @@ namespace _3rd_searching.Models
                     {
                         ItemLink = @"http://belchip.by/" + item.SelectNodes(".//h3/a")[0].Attributes["href"].Value,
                         Name = item.SelectNodes(".//h3/a")[0].InnerText,
-                        PictureLink = @"http://belchip.by/" + item.SelectNodes(".//a/img")?[1].Attributes["src"].Value,
+                        ImageLink = @"http://belchip.by/" + item.SelectNodes(".//a/img")?[1].Attributes["src"].Value,
                         Price = item.SelectNodes(".//*[@class='denoPrice']")?[0].InnerText.Split(' ')[0] ?? "цена по запросу"
                     };
                     if (exemplar.Price == "цена по запросу") exemplar.Existance = "по запросу";

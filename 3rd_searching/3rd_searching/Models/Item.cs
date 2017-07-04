@@ -12,7 +12,7 @@ namespace _3rd_searching.Models
         public string Name { get; set; }
         public string ItemLink { get; set; }
         public string Price { get; set; }
-        public string PictureLink { get; set; }
+        public string ImageLink { get; set; }
         public string Existance { get; set; }
     }
 }
