@@ -10,7 +10,7 @@ namespace _3rd_searching.Models
     {
         public List<Item> Parse(string query)
         {
-            HtmlNodeCollection nodes = GetItemsInTags(query);
+            HtmlNodeCollection nodes = GetNodeCollection(query);
             List<Item> results = new List<Item>();
             if (nodes != null)
                 foreach (HtmlNode node in nodes) results.Add(GetItem(node));
@@ -36,7 +36,7 @@ namespace _3rd_searching.Models
             else { item.Existance = "на складе"; item.Price += "BYN"; }
         }
 
-        private HtmlNodeCollection GetItemsInTags(string query)
+        private HtmlNodeCollection GetNodeCollection(string query)
         {
             string request = @"http://belchip.by/search/?query=" + query;
             HtmlDocument html = (new HtmlWeb()).Load(request);
