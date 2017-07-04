@@ -16,38 +16,44 @@ class DemoCapybara
 
   @@elementsID = ["user_username", "user_email", "user_password", "user_password_confirmation", ".data-agreement > span"]
   @@arr = Array.new(2)
+  @@session
 
   def OpenBrowser
     count = ARGV[0].to_i
     if count > 0
       for i in 1..count
-        visit("https://dev.by/registration")
+        @@session = Capybara::Session.new(:selenium)
+        @@session.visit("https://dev.by/registration")
         Register()
         Confirmation()
+        @@session.driver.browser.quit
       end      
     end
   end 
 
   def Register
-    GetStrs()
+    GetSRegistrationData()
     FillItIn()
     Agreement()
   end
 
   def Confirmation
-    visit('https://temp-mail.ru/option/change')
-    fill_in(class: 'form-control', with: @@arr[0])
-    find('#postbut').click
-    find('#click-to-refresh').click
-    table = find('#mails > tbody')
+    @@session.visit('https://temp-mail.ru/option/change')
+    @@session.fill_in(class: 'form-control', with: @@arr[0])
+    @@session.find('#postbut').click
+    @@session.find('#click-to-refresh').click
+    table = @@session.find('#mails > tbody')
     row = table.first('tr', :text => 'Dev.by')
     link = row.find('a', :class => 'title-subject').click
-    find('body > div.page-content > div > div > div.col-sm-8 > div > div > div.pm-text > div > div > p:nth-child(3) > a').click
+    @@session.find('body > div.page-content > div > div > div.col-sm-8 > div > div > div.pm-text > div > div > p:nth-child(3) > a').click
+    @@session.find('#click-to-delete > span').click
+    # p @@arr[0] + "  " + @@arr[1]
     p @@arr
   end
 
-  def GetStrs()
+  def GetSRegistrationData()
     @@arr[0] = GetRandString(rand(2..16))
+    # @@arr[0] = "qwertyuiop"
     @@arr[1] = GetRandString(rand(6..16))
   end
 
@@ -56,21 +62,22 @@ class DemoCapybara
   end
 
   def FillItIn
-    fill_in(@@elementsID[0], with: @@arr[0])
-    fill_in(@@elementsID[1], with: @@arr[0] + "@binka.me")
-    fill_in(@@elementsID[2], with: @@arr[1])
-    fill_in(@@elementsID[3], with: @@arr[1])
-    find(@@elementsID[4]).click
+    @@session.fill_in(@@elementsID[0], with: @@arr[0])
+    @@session.fill_in(@@elementsID[1], with: @@arr[0] + "@binka.me")
+    @@session.fill_in(@@elementsID[2], with: @@arr[1])
+    @@session.fill_in(@@elementsID[3], with: @@arr[1])
+    @@session.find(@@elementsID[4]).click
   end
 
   def Agreement
-    find(".btn").click
+    @@session.find(".btn").click
     begin
-      errors = find('//*[@id="new_user"]/div[2]/div/div/div')      
+      errors = @@session.find('#new_user > div:nth-child(2) > div > div > div')      
     rescue Exception => e
       return
     end
-    Register()
+      Register()
+    return
   end
 end
 
