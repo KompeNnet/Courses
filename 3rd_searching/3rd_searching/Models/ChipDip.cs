@@ -14,7 +14,8 @@ namespace _3rd_searching.Models
         private List<Item> GetResultList(string request)
         {
             List<Item> result = new List<Item>();
-            for (int i = 1; i <= GetPageCount(request); i++) GetItemsFromSubLists(ref result, request, i);
+            for (int i = 1; i <= GetPageCount(request); i++)
+                GetItemsFromSubLists(ref result, request, i);
             return result;
         }
 
@@ -36,7 +37,7 @@ namespace _3rd_searching.Models
 
         private void GetItemsFromSubListPages(ref List<Item> result, string url, int i)
         {
-            HtmlNodeCollection nodes = GetNodeCollection(url + $"&page={i}", "//*[@class='item__content']");
+            HtmlNodeCollection nodes = GetNodeCollection(url + $"?page={i}", "//*[@class='item__content']");
             foreach (HtmlNode node in nodes) result.Add(GetItem(node));
         }
 

@@ -23,6 +23,11 @@
             font-size: 16px;
         }
     </style>
+    <script type="text/javascript">
+        function ShowSpinner() {
+            $('#spinner').css('visibility', 'visible');
+        }
+    </script>
 </head>
 <body>
     <div class="container body-content">
@@ -31,10 +36,10 @@
         <div class="form-group">
             <form class="form-inline" method="post" target="_self">
                 <input class="form-control" type="text" placeholder="Search" name="arg" />
-                <input class="btn btn-info" type="submit" value="Search" />
+                <input class="btn btn-info" type="submit" onclick="ShowSpinner()" value="Search"/>
             </form>
         </div>
-
+        <img id="spinner" style="visibility:hidden" src="~/Content/spinner.gif" />
         <div>
             <table>
                 @if (ViewBag.items?.Count > 0)
