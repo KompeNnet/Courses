@@ -19,6 +19,7 @@
         }
         tr, td, th {
             border: 1px solid;
+            padding-left: 5px;
             border-color: grey;
             font-size: 16px;
         }
@@ -31,15 +32,14 @@
 </head>
 <body>
     <div class="container body-content">
-
         <h2>Search</h2>
         <div class="form-group">
             <form class="form-inline" method="post" target="_self">
                 <input class="form-control" type="text" placeholder="Search" name="arg" />
                 <input class="btn btn-info" type="submit" onclick="ShowSpinner()" value="Search"/>
+                <img id="spinner" height="60" style="visibility:collapse" src="~/Content/spinner.gif" />
             </form>
         </div>
-        <img id="spinner" style="visibility:hidden" src="~/Content/spinner.gif" />
         <div>
             <table>
                 @if (ViewBag.items?.Count > 0)
@@ -57,7 +57,7 @@
                     @foreach (_3rd_searching.Models.Item item in ViewBag.items ?? new List<int>())
                     {
                         <tr>
-                            <td><a href="@item.ItemLink"><img class="img-rounded" src="@item.ImageLink" /></a></td>
+                            <td><a href="@item.ItemLink"><img height="60" class="img-rounded" src="@item.ImageLink" /></a></td>
                             <td><a target="_blank" style="vertical-align:top" href="@item.ItemLink">@item.Name</a></td>
                             <td>@item.Price</td>
                             <td>@item.Existance</td>
