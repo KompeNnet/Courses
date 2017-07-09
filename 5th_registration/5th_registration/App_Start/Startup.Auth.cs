@@ -39,19 +39,24 @@ namespace _5th_registration
             //    clientId: "",
             //    clientSecret: "");
 
-            //app.UseTwitterAuthentication(
-            //   consumerKey: "",
-            //   consumerSecret: "");
+            app.UseTwitterAuthentication(
+               consumerKey: "8F8X6KRqTJRY9LxyiPKhrUbdr",
+               consumerSecret: "glGCyvMTn9CRecgDB56CZFvFDoiCbZ82sCPRXxdMzaAgyg2R6Z");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "1074127602723166",
+               appSecret: "1378198f85e5814d4d8bbd0210766312");
 
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {
                 ClientId = "500028112078-tk5d3v115qqb1lfn2ai2t1e7s5qg417n.apps.googleusercontent.com",
                 ClientSecret = "boQEpkTG9D1caWPlWxZtqLid"
             });
+
+            app.UseVkontakteAuthentication(
+                "6104987",
+                "SGd8dwMA3JrlDvhMOrKG",
+                "email");
         }
     }
 }
