@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using _5th_registration.Models;
+using System.Net.Mail;
 
 namespace _5th_registration
 {
@@ -18,8 +19,24 @@ namespace _5th_registration
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            var from = "gest.test@yandex.by";
+            var pass = "gesttest123";
+
+            SmtpClient client = new SmtpClient("smtp.yandex.ru", 587)
+            {
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new System.Net.NetworkCredential(from, pass),
+                EnableSsl = true
+            };
+
+            var mail = new MailMessage(from, message.Destination)
+            {
+                Subject = message.Subject,
+                Body = message.Body,
+                IsBodyHtml = true
+            };
+            return client.SendMailAsync(mail);
         }
     }
 
