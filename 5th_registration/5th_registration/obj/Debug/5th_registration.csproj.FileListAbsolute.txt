@@ -7,3 +7,11 @@ C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\r
 C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\System.Xml.ReaderWriter.dll
 C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\System.Xml.XPath.XDocument.dll
 C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\VBCSCompiler.exe
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\System.IO.FileSystem.dll
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\System.Security.Cryptography.Algorithms.dll
+C:\Users\Krompy\Documents\GitHub\Courses\5th_registration\5th_registration\bin\roslyn\System.ValueTuple.dll
