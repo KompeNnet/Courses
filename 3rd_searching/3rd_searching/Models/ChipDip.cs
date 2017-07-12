@@ -15,30 +15,37 @@ namespace _3rd_searching.Models
         {
             List<Item> result = new List<Item>();
             for (int i = 1; i <= GetPageCount(request); i++)
-                GetItemsFromSubLists(ref result, request, i);
+                result.AddRange(GetItemsFromSubLists(request, i));
             return result;
         }
 
-        private void GetItemsFromSubLists(ref List<Item> result, string request, int i)
+        private List<Item> GetItemsFromSubLists(string request, int i)
         {
+            List<Item> result = new List<Item>();
             try
             {
                 List<string> links = GetLinksOnPage(request, i);
-                GetItemsFromEachSubList(ref result, links);
+                result.AddRange(GetItemsFromEachSubList(links));
             }
             catch { }
+            return result;
         }
 
-        private void GetItemsFromEachSubList(ref List<Item> result, List<string> links)
+        private List<Item> GetItemsFromEachSubList(List<string> links)
         {
+            List<Item> result = new List<Item>();
             foreach (string url in links)
-                for (int i = 1; i <= GetPageCount(url); i++) GetItemsFromSubListPages(ref result, url, i);
+                for (int i = 1; i <= GetPageCount(url); i++) result.AddRange(GetItemsFromSubListPages(url, i));
+            return result;
         }
 
-        private void GetItemsFromSubListPages(ref List<Item> result, string url, int i)
+        private List<Item> GetItemsFromSubListPages(string url, int i)
         {
+            List<Item> result = new List<Item>();
             HtmlNodeCollection nodes = GetNodeCollection(url + $"?page={i}", "//*[@class='item__content']");
-            foreach (HtmlNode node in nodes) result.Add(GetItem(node));
+            try { foreach (HtmlNode node in nodes) result.Add(GetItem(node)); }
+            catch { }
+            return result;
         }
 
         private HtmlNodeCollection GetNodeCollection(string htmlDocLink, string selectParams)

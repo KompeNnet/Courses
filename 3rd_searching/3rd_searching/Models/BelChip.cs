@@ -17,7 +17,8 @@ namespace _3rd_searching.Models
         private Item GetItem(HtmlNode node)
         {
             Item item = GetItemValues(node);
-            SetExistense(ref item);
+            if (item.Price == "цена по запросу") item.Existance = "По запросу";
+            else { item.Existance = "Со склада"; item.Price += "BYN"; }
             return item;
         }
 
@@ -30,12 +31,6 @@ namespace _3rd_searching.Models
                 ImageLink = @"http://belchip.by/" + node.SelectNodes(".//a/img")?[1].Attributes["src"].Value,
                 Price = node.SelectNodes(".//*[@class='denoPrice']")?[0].InnerText.Split(' ')[0] ?? "цена по запросу"
             };
-        }
-
-        private void SetExistense(ref Item item)
-        {
-            if (item.Price == "цена по запросу") item.Existance = "По запросу";
-            else { item.Existance = "Со склада"; item.Price += "BYN"; }
         }
 
         private HtmlNodeCollection GetNodeCollection(string query)
