@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Search";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        table {
+            border: 1px solid;
+            border-color: grey;
+            margin: auto;
+            width: 100%;
+        }
+        tr, td, th {
+            border: 1px solid;
+            padding-left: 5px;
+            border-color: grey;
+            font-size: 16px;
+        }
+    </style>
+    <script type="text/javascript">
+        function ShowSpinner() {
+            $('#spinner').css('visibility', 'visible');
+        }
+    </script>
+</head>
+<body>
+    <div class="container body-content">
+        <h2>Search</h2>
+        <div class="form-group">
+            <form class="form-inline" method="post" target="_self">
+                <input class="form-control" type="text" placeholder="Search" name="arg" />
+                <input class="btn btn-info" type="submit" onclick="ShowSpinner()" value="Search"/>
+                <img id="spinner" height="60" style="visibility:collapse" src="~/Content/spinner.gif" />
+            </form>
+        </div>
+        <div>
+            <table>
+                @if (ViewBag.items?.Count > 0)
+                {
+                    <thead>
+                        <tr>
+                            <th width=15%>Image</th>
+                            <th width=50%>Name</th>
+                            <th width=15%>Price</th>
+                            <th width=20%>Exists</th>
+                        </tr>
+                    </thead>
+                }
+                <tbody>
+                    @foreach (_3rd_searching.Models.Item item in ViewBag.items ?? new List<int>())
+                    {
+                        <tr>
+                            <td><a href="@item.ItemLink"><img height="60" class="img-rounded" src="@item.ImageLink" /></a></td>
+                            <td><a target="_blank" style="vertical-align:top" href="@item.ItemLink">@item.Name</a></td>
+                            <td>@item.Price</td>
+                            <td>@item.Existance</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>
